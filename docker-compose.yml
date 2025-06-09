@@ -1,0 +1,33 @@
+name: rag-application
+
+services:
+  web:
+    build:
+      context: web/
+      dockerfile: web.Dockerfile
+    ports:
+      - "80:80"
+    env_file:
+      - web/.env
+    volumes:
+      - ./web:/app
+    depends_on:
+      backend_entrypoint:
+        condition: service_healthy
+
+  
+  backend_entrypoint:
+    build:
+      context: backend_entrypoint/
+      dockerfile: backend_entrypoint.Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - backend_entrypoint/.env
+    volumes:
+      - ./backend_entrypoint:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://$$HOST:$$PORT/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
