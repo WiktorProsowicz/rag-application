@@ -10,10 +10,10 @@ services:
     env_file:
       - web/.env
     volumes:
-      - ./web:/app
-    depends_on:
-      backend_entrypoint:
-        condition: service_healthy
+      - ./persistent_data/web:/home/appuser/data
+    # depends_on:
+    #   backend_entrypoint:
+    #     condition: service_healthy
 
   
   backend_entrypoint:
@@ -21,13 +21,13 @@ services:
       context: backend_entrypoint/
       dockerfile: backend_entrypoint.Dockerfile
     ports:
-      - "8080:8080"
+      - "8081:8081"
     env_file:
       - backend_entrypoint/.env
     volumes:
-      - ./backend_entrypoint:/app
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://$$HOST:$$PORT/ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - ./persistent_data/backend_entrypoint:/home/appuser/data
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://$$HOST:$$PORT/ping"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5

@@ -1,15 +1,15 @@
 FROM python:3.12-slim
 
 SHELL ["/bin/bash", "-c"]
+WORKDIR /home/appuser/app
 
-RUN addgroup --system appgroup && adduser --system appuser
+RUN groupadd -g 1000 appuser && useradd appuser -u 1000 -g 1000 -m -s /bin/bash
 
-WORKDIR /app
-
-COPY requirements.txt /tmp/requirements.txt
-RUN chown -R appuser:appgroup /app
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+COPY . /home/appuser/app
+RUN chown -R appuser:appuser /home/appuser/
 
 USER appuser
-EXPOSE 80
+RUN pip install --no-cache-dir .
+
+EXPOSE 8081
 CMD ["python", "start_server.py"]

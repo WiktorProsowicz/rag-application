@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "web"
+version = "0.1.0"
+requires-python=">=3.12"
+dependencies = [
+    "gradio==5.33.0"
+]
+
+[project.optional-dependencies]
+dev = [
+]
+
+[tool.coverage.report]
+fail_under = 90
