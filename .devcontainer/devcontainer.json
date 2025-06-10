@@ -30,9 +30,14 @@
 	"runArgs": [
 		"--init",
 		"--privileged",
-		"--gpus",
-		"all"
+		"--volume=/home/${localEnv:USER}/.ssh:/home/ubuntu/.ssh",
+		"--volume=/home/${localEnv:USER}/.gitconfig:/home/ubuntu/.gitconfig"
+
 	],
 	"overrideCommand": false,
-	"remoteUser": "ubuntu"
+	"remoteUser": "ubuntu",
+	"remoteEnv": {
+        "GIT_CONFIG_GLOBAL": "/home/ubuntu/workspace/.gitconfig",
+		"SSH_AUTH_SOCK": "${localEnv:SSH_AUTH_SOCK}"
+    }
 }
