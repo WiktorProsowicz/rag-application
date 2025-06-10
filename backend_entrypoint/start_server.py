@@ -3,6 +3,10 @@ import multiprocessing
 
 import uvicorn
 
+import logging
+
+import subprocess
+
 
 if __name__ == "__main__":
 
@@ -10,6 +14,18 @@ if __name__ == "__main__":
     port = int(os.environ["PORT"])
     dev_mode = bool(os.environ["DEV_MODE"])
     n_workers = (multiprocessing.cpu_count() * 2) + 1
+    persistent_data_path = os.environ["PERSISTENT_DATA_PATH"]
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(levelname)s - %(asctime)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler(os.path.join(persistent_data_path, "server.log"), mode='a')
+        ]
+    )
+
+    logging.info(f"Starting server on {host}:{port} with {n_workers} workers.")
 
     if dev_mode:
         reload_args = {
