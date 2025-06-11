@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Setup packages
-        uses: ./.github/actions/setup
+        uses: ./.github/actions/setup-unit-tests
 
       - name: Run pre-commit hooks
         run: just run-pre-commit
