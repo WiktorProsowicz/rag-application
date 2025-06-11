@@ -1,0 +1,20 @@
+---
+name: setup-unit-tests
+
+runs:
+  using: composite
+
+  steps:
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: latest
+        enable-cache: true
+        cache-dependency-glob: '**/uv.lock'
+
+    - name: Setup Just
+      uses: extractions/setup-just@v2
+
+    - name: Install dependencies
+      run: just setup-dev
+      shell: bash

@@ -1,0 +1,30 @@
+---
+name: setup-integration-tests
+
+runs:
+  using: composite
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Docker Compose
+      uses: docker/setup-compose-action@v1
+
+    - name: Cache pip
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ inputs.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+
+    - name: Wait for services
+
+      run: sleep 15
+
+    - name: Run tests
+      run: |
+        docker exec <your-test-service-or-app> [your-test-command]
+
+    - name: Tear down
+      if: always()
+      run: docker compose down

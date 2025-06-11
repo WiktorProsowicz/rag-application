@@ -1,0 +1,7 @@
+.vscode/
+**/__pycache__/
+persistent_data/
+.venv/
+build/
+.mypy_cache/
+*.egg-info/
