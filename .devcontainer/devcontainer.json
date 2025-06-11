@@ -3,10 +3,7 @@
 {
 	"name": "Ubuntu_latest",
 	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			"network": "host"
-		}
+		"dockerfile": "Dockerfile"
 	},
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {
@@ -14,8 +11,8 @@
 			"moby": false
 		}
 	},
-	"workspaceMount": "source=${localWorkspaceFolder}/,target=/home/devcontainer/workspace,type=bind",
-	"workspaceFolder": "/home/devcontainer/workspace",
+	"workspaceMount": "source=${localWorkspaceFolder}/,target=/home/ubuntu/workspace,type=bind",
+	"workspaceFolder": "/home/ubuntu/workspace",
 	"postCreateCommand": "/bin/bash .devcontainer/res/post_create_command.bash",
 	"customizations": {
 		"vscode": {
@@ -24,21 +21,22 @@
 				"ms-python.python",
 				"ms-python.pylint",
 				"ms-python.autopep8",
-				"tamasfe.even-better-toml"
+				"tamasfe.even-better-toml",
+				"VisualStudioExptTeam.vscodeintellicode"
 			]
 		}
 	},
 	"runArgs": [
 		"--init",
 		"--privileged",
+		"--network=host",
 		"--volume=/home/${localEnv:USER}/.ssh:/home/ubuntu/.ssh",
 		"--volume=/home/${localEnv:USER}/.gitconfig:/home/ubuntu/.gitconfig"
-
 	],
 	"overrideCommand": false,
 	"remoteUser": "ubuntu",
 	"remoteEnv": {
-        "GIT_CONFIG_GLOBAL": "/home/ubuntu/workspace/.gitconfig",
+		"GIT_CONFIG_GLOBAL": "/home/ubuntu/.gitconfig",
 		"SSH_AUTH_SOCK": "${localEnv:SSH_AUTH_SOCK}"
-    }
+	}
 }

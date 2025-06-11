@@ -3,3 +3,5 @@ backend_entrypoint/venv/
 web/venv/
 **/__pycache__/
 persistent_data/
+.venv/
+.mypy_cache/

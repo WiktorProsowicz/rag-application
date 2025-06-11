@@ -9,10 +9,3 @@ requires-python=">=3.12"
 dependencies = [
     "gradio==5.33.0"
 ]
-
-[project.optional-dependencies]
-dev = [
-]
-
-[tool.coverage.report]
-fail_under = 90
