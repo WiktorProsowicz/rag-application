@@ -1,9 +1,0 @@
-pytest
-pytest-cov
-mypy
-pre-commit
-pylint
-requests==2.32.3
-uvicorn==0.34.3
-fastapi==0.115.12
-gradio==5.33.0

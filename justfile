@@ -12,7 +12,7 @@ run-pre-commit:
 # Set up environment and install dependencies
 setup-dev:
     uv venv
-    uv pip install -r requirements-dev.txt
+    uv sync --project . --extra dev
 
 # Build and run all services
 up-services:

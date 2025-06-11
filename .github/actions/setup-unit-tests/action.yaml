@@ -10,7 +10,7 @@ runs:
       with:
         version: latest
         enable-cache: true
-        cache-dependency-glob: '**/requirements-dev.txt'
+        cache-dependency-glob: '**/uv.lock'
 
     - name: Setup Just
       uses: extractions/setup-just@v2
