@@ -18,7 +18,7 @@ runs:
         key: ${{ runner.os }}-pip-${{ inputs.python-version }}-${{ hashFiles('**/pyproject.toml') }}
 
     - name: Wait for services
-    
+
       run: sleep 15
 
     - name: Run tests
