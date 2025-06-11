@@ -1,0 +1,19 @@
+---
+name: setup-unit-tests
+
+runs:
+  using: composite
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: "latest"
+        enable-cache: true
+        cache-dependency-glob: "**/requirements-dev.txt"
+
+    - name: Setup Just
+      uses: extractions/setup-just@v2

@@ -1,0 +1,24 @@
+---
+# -------------------------------------------------------------------
+# Contains a GitHub Actions workflow for running pre-commit hooks.
+# -------------------------------------------------------------------
+
+name: pre-commit
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup packages
+        uses: ./.github/actions/setup
+
+      - name: Run pre-commit hooks
+        run: just run-pre-commit
+        shell: bash
