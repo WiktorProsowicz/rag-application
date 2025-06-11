@@ -14,9 +14,7 @@ services:
       - ./persistent_data/web:/home/appuser/data
       - ./web:/home/appuser/app
     depends_on:
-      backend_entrypoint:
-        condition: service_healthy
-
+      - backend_entrypoint
 
   backend_entrypoint:
     build:
@@ -29,8 +27,4 @@ services:
     volumes:
       - ./persistent_data/backend_entrypoint:/home/appuser/data
       - ./backend_entrypoint:/home/appuser/app
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://$$HOST:$$PORT/ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+
