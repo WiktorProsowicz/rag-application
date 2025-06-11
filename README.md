@@ -41,3 +41,7 @@ To stop it:
 ```bash
 just down-services
 ```
+
+## Changelog
+
+Refer to `Changelog.md`.
