@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import time
+"""Contains the main entrypoint for the web application."""
 import logging
 import os
+import time
 
 import gradio as gr
 
 import web
+
 
 def _rag_and_chat_stream(user_message, history):
 
@@ -13,9 +15,9 @@ def _rag_and_chat_stream(user_message, history):
     logging.info('Current chat history: %s', history)
 
     history = history or []
-    
+
     chat_history = history.copy()
-    
+
     logging.info('Current chat history: %s', history)
     yield history
 
@@ -24,7 +26,7 @@ def _rag_and_chat_stream(user_message, history):
         chat_history=chat_history
     )
 
-    history[-1][1] = ""
+    history[-1][1] = ''
 
     logging.info('Current chat history: %s', history)
     yield history
@@ -35,9 +37,9 @@ def _rag_and_chat_stream(user_message, history):
         context_docs=context_docs
     )
 
-    full_text_response = ""
+    full_text_response = ''
     for chunk in chat_response:
-        token = chunk.choices[0].delta.get("content", "")
+        token = chunk.choices[0].delta.get('content', '')
         fulfull_text_responsel += token
         history[-1][1] = full_text_response
 
@@ -49,9 +51,9 @@ def _obtain_gui():
 
     gui = gr.ChatInterface(
         _rag_and_chat_stream,
-        chatbot=gr.Chatbot(elem_id="agh_chat", height=400, type='tuples', show_copy_button=True),
-        title="AGH Chat",
-        textbox=gr.Textbox(placeholder="Type a message...", label="Your message")
+        chatbot=gr.Chatbot(elem_id='agh_chat', height=400, type='tuples', show_copy_button=True),
+        title='AGH Chat',
+        textbox=gr.Textbox(placeholder='Type a message...', label='Your message')
     )
 
     return gui
@@ -75,4 +77,4 @@ if __name__ == '__main__':
     gui_if = _obtain_gui()
 
     gui_if.launch(server_name='0.0.0.0',
-               server_port=80)
+                  server_port=80)

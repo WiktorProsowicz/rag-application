@@ -7,8 +7,6 @@ import time
 
 import uvicorn
 
-from fastapi import FastAPI
-
 
 if __name__ == '__main__':
 
@@ -30,7 +28,6 @@ if __name__ == '__main__':
 
     logging.info('Starting server on %s:%d with %d workers.',
                  host, port, n_workers)
-
 
     uvicorn.run('api:app',
                 host=host,

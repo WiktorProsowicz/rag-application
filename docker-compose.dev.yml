@@ -27,4 +27,3 @@ services:
     volumes:
       - ./persistent_data/backend_entrypoint:/home/appuser/data
       - ./backend_entrypoint:/home/appuser/app
-

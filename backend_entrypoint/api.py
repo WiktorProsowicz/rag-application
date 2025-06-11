@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """Contains API of the entrypoint backend service."""
-import os
-from typing import List, Tuple, Dict
-import logging
 import asyncio
+import logging
+import os
+from typing import List
+from typing import Tuple
 
+import pydantic
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-import pydantic
 
 
 class RequestCollectContextInfo(pydantic.BaseModel):
@@ -35,8 +36,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[os.environ['FRONTEND_APP_URL']],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
 
@@ -54,29 +55,30 @@ async def collect_context_info(request: RequestCollectContextInfo) -> ResponseCo
                   request.user_message, request.chat_history)
 
     context_docs = [
-        ("Document 1", "This is the content of document 1."),
-        ("Document 2", "This is the content of document 2."),
-        ("Document 3", "This is the content of document 3.")
+        ('Document 1', 'This is the content of document 1.'),
+        ('Document 2', 'This is the content of document 2.'),
+        ('Document 3', 'This is the content of document 3.')
     ]
 
     return ResponseCollectContextInfo(context_docs=context_docs)
 
-@app.post("/stream_chat_response")
+
+@app.post('/stream_chat_response')
 async def stream_chat_response(request: RequestStreamChatResponse):
     """Streams the response from the LLM based on the provided context."""
 
-    logging.debug(('Requested /stream_chat_response with user_message: %s,'+
+    logging.debug(('Requested /stream_chat_response with user_message: %s,' +
                    ' chat_history: %s, context_docs: %s'),
                   request.user_message, request.chat_history, request.context_docs)
 
     async def event_generator():
-        for token in ["Hello", " ", "user", "!"]:
-            
+        for token in ['Hello', ' ', 'user', '!']:
+
             chunk = {
                 'content': token
-            } 
-            
+            }
+
             yield chunk
             await asyncio.sleep(0.2)
 
-    return StreamingResponse(event_generator(), media_type="text/plain")
+    return StreamingResponse(event_generator(), media_type='text/plain')

@@ -11,9 +11,9 @@ runs:
     - name: Install the latest version of uv
       uses: astral-sh/setup-uv@v6
       with:
-        version: "latest"
+        version: latest
         enable-cache: true
-        cache-dependency-glob: "**/requirements-dev.txt"
+        cache-dependency-glob: '**/requirements-dev.txt'
 
     - name: Setup Just
       uses: extractions/setup-just@v2
