@@ -27,8 +27,8 @@ The commands are configured to be reused by GitHub Actions jobs.
 ## Usage
 
 Prerequisities for using the project outside of the Development Container:
-1. Justfile - for running the setup scripts defined in the `justfile`
-2. docker-compose - for running multi-container application
+1. `just` - for running the setup scripts defined in the `justfile`
+2. `docker-compose` - for running multi-container application
 
 In order to set up the whole system, run:
 
