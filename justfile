@@ -3,15 +3,26 @@
 # For more info, see: https://github.com/casey/just
 # --------------------------------------------------
 
+set shell := ["bash", "-c"]
+
+# Run static repository checks
+run-pre-commit:
+    uv run pre-commit run --all-files
+
+# Set up environment and install dependencies
+setup-dev:
+    uv venv
+    uv pip install -r requirements-dev.txt
+
 # Build and run all services
 up-services:
     mkdir -p persistent_data/backend_entrypoint
     mkdir -p persistent_data/web
-    docker-compose up
+    docker-compose -f docker-compose.dev.yml up
 
 # Stop all services and remove containers
 down-services:
-    docker-compose down
+    docker-compose -f docker-compose.dev.yml down
 
 # Clean up all Docker images
 cleanup-services:

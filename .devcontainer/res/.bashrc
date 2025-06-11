@@ -25,3 +25,5 @@ __bash_prompt() {
     unset -f __bash_prompt
 }
 __bash_prompt
+
+export PATH=/home/$USER/.local/bin:$PATH

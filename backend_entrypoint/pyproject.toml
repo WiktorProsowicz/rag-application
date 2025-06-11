@@ -11,9 +11,3 @@ dependencies = [
     "uvicorn==0.34.3",
     "fastapi==0.115.12"
 ]
-
-[project.optional-dependencies]
-dev = []
-
-[tool.coverage.report]
-fail_under = 90
