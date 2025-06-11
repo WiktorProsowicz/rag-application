@@ -1,9 +1,7 @@
 # !/bin/bash
 
-wget -qO- https://astral.sh/uv/install.sh | sh
-export PATH=/home/$USER/.local/bin:$PATH
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install --upgrade pip
+pip install .
 
-uv venv
-uv run pip install .
-
-uv run python start_server.py
+python start_server.py
