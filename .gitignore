@@ -1,7 +1,7 @@
 .vscode/
-backend_entrypoint/venv/
-web/venv/
 **/__pycache__/
 persistent_data/
 .venv/
+build/
 .mypy_cache/
+*.egg-info/
