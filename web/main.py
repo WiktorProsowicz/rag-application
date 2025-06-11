@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Contains the main entrypoint for the web application."""
 import logging
+import logging.config
 import os
 import time
 
@@ -11,14 +12,14 @@ import web
 
 def _rag_and_chat_stream(user_message, history):
 
-    logging.info('Received user message: %s', user_message)
-    logging.info('Current chat history: %s', history)
-
     history = history or []
-
     chat_history = history.copy()
 
-    logging.info('Current chat history: %s', history)
+    history.append({
+        'role': 'assistant',
+        'content': 'Collecting context information...'
+    })
+
     yield history
 
     context_docs = web.backend_communication.collect_context_info(
@@ -26,9 +27,8 @@ def _rag_and_chat_stream(user_message, history):
         chat_history=chat_history
     )
 
-    history[-1][1] = ''
+    history[-1]['content'] = ''
 
-    logging.info('Current chat history: %s', history)
     yield history
 
     chat_response = web.backend_communication.stream_chat_response(
@@ -39,11 +39,10 @@ def _rag_and_chat_stream(user_message, history):
 
     full_text_response = ''
     for chunk in chat_response:
-        token = chunk.choices[0].delta.get('content', '')
-        fulfull_text_responsel += token
-        history[-1][1] = full_text_response
+        token = chunk.get('content', '')
+        full_text_response += token
+        history[-1]['content'] = full_text_response
 
-        logging.info('Current chat history: %s', history)
         yield history
 
 
@@ -51,8 +50,9 @@ def _obtain_gui():
 
     gui = gr.ChatInterface(
         _rag_and_chat_stream,
-        chatbot=gr.Chatbot(elem_id='agh_chat', height=400, type='tuples', show_copy_button=True),
+        chatbot=gr.Chatbot(elem_id='agh_chat', height=400, type='messages', show_copy_button=True),
         title='AGH Chat',
+        type='messages',
         textbox=gr.Textbox(placeholder='Type a message...', label='Your message')
     )
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     dev_mode = bool(os.environ['DEV_MODE'])
 
     logging.basicConfig(
-        level=logging.INFO if dev_mode else logging.DEBUG,
+        level=logging.INFO,
         format='%(levelname)s - %(asctime)s - %(message)s',
         handlers=[
             logging.StreamHandler(),

@@ -5,6 +5,8 @@ import logging
 import os
 from typing import List
 from typing import Tuple
+from typing import Dict
+import json
 
 import pydantic
 from fastapi import FastAPI
@@ -15,7 +17,7 @@ from fastapi.responses import StreamingResponse
 class RequestCollectContextInfo(pydantic.BaseModel):
     """Contains the user's message and chat history."""
     user_message: str
-    chat_history: List[Tuple[str, str]]
+    chat_history: List[Dict[str, str]]
 
 
 class ResponseCollectContextInfo(pydantic.BaseModel):
@@ -26,7 +28,7 @@ class ResponseCollectContextInfo(pydantic.BaseModel):
 class RequestStreamChatResponse(pydantic.BaseModel):
     """Contains the user's message, chat history, and context information."""
     user_message: str
-    chat_history: List[Tuple[str, str]]
+    chat_history: List[Dict[str, str]]
     context_docs: List[Tuple[str, str]]
 
 
@@ -51,8 +53,10 @@ async def read_ping():
 async def collect_context_info(request: RequestCollectContextInfo) -> ResponseCollectContextInfo:
     """Collects context information based on the user's message and chat history."""
 
-    logging.debug('Requested /collect_info with user_message: %s and chat_history: %s',
+    logging.info('Requested /collect_info with user_message: %s and chat_history: %s',
                   request.user_message, request.chat_history)
+
+    await asyncio.sleep(2)
 
     context_docs = [
         ('Document 1', 'This is the content of document 1.'),
@@ -67,18 +71,28 @@ async def collect_context_info(request: RequestCollectContextInfo) -> ResponseCo
 async def stream_chat_response(request: RequestStreamChatResponse):
     """Streams the response from the LLM based on the provided context."""
 
-    logging.debug(('Requested /stream_chat_response with user_message: %s,' +
+    logging.info(('Requested /stream_chat_response with user_message: %s,' +
                    ' chat_history: %s, context_docs: %s'),
                   request.user_message, request.chat_history, request.context_docs)
 
+    message = """
+        In my company we use mostly httpx in our projects to do sync and async calls to our and other apis, but recently we ran into an issue, which (imo) could (and maybe should?) be solved:
+
+    httpx.stream (in contrast to e.g. urlib and therefor requests etc. as well) does not return a file-like object - and that in turn breaks other packages which expect a file-like object, e.g. s3 stream upload via boto3 expects a file-like object, with the normal read(amount) method.
+
+    Sure, I could write a proxy object to do this, but as this is quit a low level functionality it feels like that it's something this package should directly provide.
+    """
+
     async def event_generator():
-        for token in ['Hello', ' ', 'user', '!']:
+        for token in message.replace(' ', '\t ').split('\t'):
 
             chunk = {
                 'content': token
             }
 
-            yield chunk
-            await asyncio.sleep(0.2)
+            chunk = json.dumps(chunk).encode('utf-8')
 
-    return StreamingResponse(event_generator(), media_type='text/plain')
+            yield chunk
+            await asyncio.sleep(0.1)
+
+    return StreamingResponse(event_generator(), media_type='application/json')

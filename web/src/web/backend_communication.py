@@ -5,19 +5,20 @@ import os
 from typing import Dict
 from typing import List
 from typing import Tuple
+import json
 
 import httpx
 import requests  # type: ignore
 
 
 def collect_context_info(
-        user_message: str, chat_history: List[Dict[str, str]]) -> List[Dict[str, str]]:
+        user_message: str, chat_history: List[Dict[str, str]]) -> List[Tuple[str, str]]:
     """Collects context information based on the user's message and chat history."""
 
-    logging.debug('Collecting context info with user_message: %s and chat_history: %s',
+    logging.info('Collecting context info with user_message: %s and chat_history: %s',
                   user_message, chat_history)
 
-    url = f"{os.environ['BACKEND_API_URL']}/collect_context_info"
+    url = f"{os.environ['BACKEND_ENTRYPOINT_URL']}/collect_context_info"
     payload = {
         'user_message': user_message,
         'chat_history': chat_history
@@ -30,15 +31,15 @@ def collect_context_info(
 
 
 def stream_chat_response(user_message: str,
-                         chat_history: List[Tuple[str, str]],
-                         context_docs: List[Dict[str, str]]):
+                         chat_history: List[Dict[str, str]],
+                         context_docs: List[Tuple[str, str]]):
     """Collects LLM response based on the context and streams it."""
 
-    logging.debug(('Streaming chat response with user_message: %s, ' +
+    logging.info(('Streaming chat response with user_message: %s, ' +
                    'chat_history: %s, context_docs: %s'),
                   user_message, chat_history, context_docs)
 
-    url = f"{os.environ['BACKEND_API_URL']}/stream_chat_response"
+    url = f"{os.environ['BACKEND_ENTRYPOINT_URL']}/stream_chat_response"
 
     payload = {
         'user_message': user_message,
@@ -46,4 +47,6 @@ def stream_chat_response(user_message: str,
         'context_docs': context_docs
     }
 
-    yield from httpx.stream('POST', url, data=payload, timeout=5)
+    with httpx.stream('POST', url, json=payload, timeout=5) as stream:
+        for chunk in stream.iter_bytes():
+            yield json.loads(chunk.decode('utf-8'))

@@ -17,7 +17,7 @@ if __name__ == '__main__':
     persistent_data_path = os.environ['PERSISTENT_DATA_PATH']
 
     logging.basicConfig(
-        level=logging.DEBUG if dev_mode else logging.INFO,
+        level=logging.INFO,
         format='%(levelname)s - %(asctime)s - %(message)s',
         handlers=[
             logging.StreamHandler(),
