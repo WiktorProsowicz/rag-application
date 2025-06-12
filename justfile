@@ -26,4 +26,7 @@ down-services:
 
 # Clean up all Docker images
 cleanup-services:
-    docker rmi -f $(docker images -aq)
+    docker images --format '{{{{.Repository}}:{{{{.Tag}} {{{{.ID}}' | \
+    grep '^rag-application-.*' | \
+    awk '{print $2}' | \
+    xargs -r docker rmi
