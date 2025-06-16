@@ -48,15 +48,30 @@ def _rag_and_chat_stream(user_message, history):
 
 def _obtain_gui():
 
-    gui = gr.ChatInterface(
-        _rag_and_chat_stream,
-        chatbot=gr.Chatbot(elem_id='agh_chat', height=400, type='messages', show_copy_button=True),
-        title='AGH Chat',
-        type='messages',
-        textbox=gr.Textbox(placeholder='Type a message...', label='Your message')
-    )
+    with gr.Row(elem_id='agh_header_row', height='70vh'):
 
-    return gui
+        with gr.Column(elem_id='context_column', scale=1):
+            gr.Markdown(
+                """
+                # Context
+                """
+            )
+
+        with gr.Column(elem_id='chat_column', scale=3):
+
+            chat_if = gr.ChatInterface(
+                _rag_and_chat_stream,
+                chatbot=gr.Chatbot(elem_id='agh_chat',
+                                    type='messages',
+                                    height='70vh',
+                                    show_copy_button=True),
+                title='AGH-Chat',
+                type='messages',
+                textbox=gr.Textbox(placeholder='Type a message...', label='Your message')
+            )
+    
+with gr.Blocks(fill_height=True, title='AGH-Chat') as web_app:
+    _obtain_gui()
 
 
 if __name__ == '__main__':
@@ -74,7 +89,8 @@ if __name__ == '__main__':
         ]
     )
 
-    gui_if = _obtain_gui()
+    host = os.environ['WEB_APP_HOST']
+    port = int(os.environ['WEB_APP_PORT'])
 
-    gui_if.launch(server_name='0.0.0.0',
-                  server_port=80)
+    web_app.launch(server_name=host,
+                  server_port=port)
