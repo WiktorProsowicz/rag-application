@@ -6,14 +6,8 @@
 		"dockerfile": "Dockerfile"
 	},
 	"features": {
-		"ghcr.io/devcontainers/features/docker-in-docker:2": {
-			"version": "latest",
-			"moby": false
-		}
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1.6.3": {}
 	},
-	"mounts": [
-		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-	],
 	"workspaceMount": "source=${localWorkspaceFolder}/,target=/home/ubuntu/workspace,type=bind",
 	"workspaceFolder": "/home/ubuntu/workspace",
 	"postCreateCommand": "/bin/bash .devcontainer/res/post_create_command.bash",
