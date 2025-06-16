@@ -1,0 +1,26 @@
+{
+    "name": "rag-application-web",
+    "build": {
+        "dockerfile": "dev.Dockerfile"
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/appuser/app,type=bind",
+    "workspaceFolder": "/home/appuser/app",
+    "postCreateCommand": "/bin/bash .devcontainer/res/post_create_command.bash",
+    "forwardPorts": [
+        80
+    ],
+    "runArgs": [
+        "--network=host"
+    ],
+    "remoteUser": "appuser",
+    "overrideCommand": true,
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.autopep8",
+                "ms-python.pylint"
+            ]
+        }
+    }
+}

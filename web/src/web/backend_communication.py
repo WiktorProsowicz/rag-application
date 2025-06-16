@@ -18,6 +18,14 @@ def collect_context_info(
     logging.info('Collecting context info with user_message: %s and chat_history: %s',
                   user_message, chat_history)
 
+    chat_history = [
+        {
+            'role': item['role'],
+            'content': item['content']
+        }
+        for item in chat_history
+    ]
+
     url = f"{os.environ['BACKEND_ENTRYPOINT_URL']}/collect_context_info"
     payload = {
         'user_message': user_message,
