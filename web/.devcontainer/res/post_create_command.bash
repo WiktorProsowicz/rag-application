@@ -8,7 +8,7 @@ mkdir /home/appuser/data
 
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install --upgrade pip
-pip install .[dev]
+pip install -e .[dev]
 
 cat .devcontainer/res/.bash_aliases >> ~/.bash_aliases
 cat .devcontainer/res/.bashrc >> ~/.bashrc

@@ -25,9 +25,3 @@ __bash_prompt() {
     unset -f __bash_prompt
 }
 __bash_prompt
-
-export BACKEND_ENTRYPOINT_URL=http://localhost:8080
-export PERSISTENT_DATA_PATH=/home/appuser/data
-export DEV_MODE=True
-export WEB_APP_PORT=8888
-export WEB_APP_HOST=localhost

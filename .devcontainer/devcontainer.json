@@ -8,6 +8,7 @@
 	"features": {
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1.6.3": {}
 	},
+	
 	"workspaceMount": "source=${localWorkspaceFolder}/,target=/home/ubuntu/workspace,type=bind",
 	"workspaceFolder": "/home/ubuntu/workspace",
 	"postCreateCommand": "/bin/bash .devcontainer/res/post_create_command.bash",

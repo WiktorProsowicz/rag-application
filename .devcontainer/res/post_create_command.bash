@@ -4,7 +4,5 @@
 # It's role is to establish the necessary environment for the
 # user to start developing.
 
-wget -qO- https://astral.sh/uv/install.sh | sh
-
 cat .devcontainer/res/.bash_aliases >> ~/.bash_aliases
 cat .devcontainer/res/.bashrc >> ~/.bashrc

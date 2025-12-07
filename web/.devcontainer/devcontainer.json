@@ -9,9 +9,6 @@
     "forwardPorts": [
         80
     ],
-    "runArgs": [
-        "--network=host"
-    ],
     "remoteUser": "appuser",
     "overrideCommand": true,
     "customizations": {

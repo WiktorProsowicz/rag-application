@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 """Contains functions to communicate with the entrypoint backend service."""
 import logging
-import os
 from typing import Dict
 from typing import List
 from typing import Tuple
+from typing import Any
 import json
 
 import httpx
 import requests  # type: ignore
 
 
-def collect_context_info(
-        user_message: str, chat_history: List[Dict[str, str]]) -> List[Tuple[str, str]]:
-    """Collects context information based on the user's message and chat history."""
+def _logger():
+    return logging.getLogger('web_app')
 
-    logging.info('Collecting context info with user_message: %s and chat_history: %s',
-                  user_message, chat_history)
-
-    chat_history = [
+def _sanitize_chat_history(chat_history: List[Dict[str, str]]):
+    """Sanitizes the chat history to ensure it contains only relevant fields."""
+    return [
         {
             'role': item['role'],
             'content': item['content']
@@ -26,35 +24,74 @@ def collect_context_info(
         for item in chat_history
     ]
 
-    url = f"{os.environ['BACKEND_ENTRYPOINT_URL']}/collect_context_info"
-    payload = {
-        'user_message': user_message,
-        'chat_history': chat_history
-    }
+class BackendService:
+    """Communicates with the entrypoint-backend."""
 
-    response = requests.post(url, json=payload, timeout=5)
-    response.raise_for_status()
+    def __init__(self, backend_url: str):
 
-    return response.json().get('context_docs', [])
+        self._backend_url = backend_url
 
+    def collect_context_info(self,
+                             user_message: str,
+                             chat_history: List[Dict[str, Any]]) -> List[Tuple[str, str]]:
+        """Collects context information based on the user's message and chat history.
+        
+        Args:
+            user_message: The message from the user to collect context information for.
+            chat_history: The history of the chat to provide context for the request.
 
-def stream_chat_response(user_message: str,
-                         chat_history: List[Dict[str, str]],
-                         context_docs: List[Tuple[str, str]]):
-    """Collects LLM response based on the context and streams it."""
+        Raises:
+            requests.HTTPError: If the request to the backend fails.
 
-    logging.info(('Streaming chat response with user_message: %s, ' +
-                   'chat_history: %s, context_docs: %s'),
-                  user_message, chat_history, context_docs)
+        Returns:
+            A list of tuples where each tuple contains a document title and its content.
+        """
 
-    url = f"{os.environ['BACKEND_ENTRYPOINT_URL']}/stream_chat_response"
+        _logger().debug('Collecting context info with user_message: %s and chat_history: %s',
+                     user_message, chat_history)
 
-    payload = {
-        'user_message': user_message,
-        'chat_history': chat_history,
-        'context_docs': context_docs
-    }
+        chat_history = _sanitize_chat_history(chat_history)
 
-    with httpx.stream('POST', url, json=payload, timeout=5) as stream:
-        for chunk in stream.iter_bytes():
-            yield json.loads(chunk.decode('utf-8'))
+        url = f"{self._backend_url}/collect_context_info"
+        payload = {
+            'user_message': user_message,
+            'chat_history': chat_history
+        }
+
+        response = requests.post(url, json=payload, timeout=5)
+        response.raise_for_status()
+
+        return response.json().get('context_docs', [])
+
+    def stream_chat_response(self,
+                             user_message: str,
+                             chat_history: List[Dict[str, Any]],
+                             context_docs: List[Tuple[str, str]]):
+        """Collects LLM response based on the context and streams it.
+        
+        Args:
+            user_message: The message from the user to generate a response for.
+            chat_history: The history of the chat to provide context for the request.
+            context_docs: The documents retrieved to provide additional context.
+
+        Returns:
+            A generator that yields chunks of the chat response as they are received.
+        """
+
+        _logger().debug(('Streaming chat response with user_message: %s, ' +
+                      'chat_history: %s, context_docs: %s'),
+                     user_message, chat_history, context_docs)
+
+        chat_history = _sanitize_chat_history(chat_history)
+
+        url = f"{self._backend_url}/stream_chat_response"
+
+        payload = {
+            'user_message': user_message,
+            'chat_history': chat_history,
+            'context_docs': context_docs
+        }
+
+        with httpx.stream('POST', url, json=payload, timeout=5) as stream:
+            for chunk in stream.iter_bytes():
+                yield json.loads(chunk.decode('utf-8'))
